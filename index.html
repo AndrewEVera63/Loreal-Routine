@@ -24,6 +24,53 @@
         <h1 class="site-title">Smart Routine & Product Advisor</h1>
       </header>
 
+
+ke the section above your chatbox and replace it with this:
+
+<!-- Product Search & Category -->
+<div class="search-section">
+
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="Search products..."
+  />
+
+  <select id="categoryFilter">
+    <option value="">All Categories</option>
+    <option value="cleanser">Cleansers</option>
+    <option value="moisturizer">Moisturizers</option>
+    <option value="skincare">Skincare</option>
+    <option value="haircare">Haircare</option>
+    <option value="makeup">Makeup</option>
+    <option value="hair color">Hair Color</option>
+    <option value="hair styling">Hair Styling</option>
+    <option value="men's grooming">Men's Grooming</option>
+    <option value="suncare">Suncare</option>
+    <option value="fragrance">Fragrance</option>
+  </select>
+
+</div>
+
+<!-- Product Grid -->
+<div id="productsContainer" class="products-grid"></div>
+
+<!-- Selected Products -->
+<section class="selected-products">
+
+  <h2>Selected Products</h2>
+
+  <div id="selectedProductsList"></div>
+
+  <button id="generateRoutine" class="generate-btn">
+      ✨ Generate Routine
+  </button>
+
+</section>
+
+
+
+
       <!------- Chat Area ------->
       <main>
         <section class="chatbox">

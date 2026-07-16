@@ -2,7 +2,18 @@
 const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
+
+const categoryFilter = document.getElementById("categoryFilter");
+const searchInput = document.getElementById("searchInput");
+const productsContainer = document.getElementById("productsContainer");
+const selectedProductsList = document.getElementById("selectedProductsList");
+const generateRoutineBtn = document.getElementById("generateRoutine");
+
 const workerUrl = "https://loral-chatbot.andrewevera63.workers.dev/";
+
+let allProducts = [];
+let selectedProducts = [];
+
 
 /* Conversation history */
 const messages = [
@@ -103,3 +114,45 @@ function addMessage(sender, text) {
 
   return message;
 }
+
+async function loadProducts() {
+
+  const response = await fetch("products.json");
+
+  const data = await response.json();
+
+  allProducts = data.products;
+
+  displayProducts(allProducts);
+
+}   // <-- THIS BRACE WAS MISSING
+
+function displayProducts(products) {
+
+  productsContainer.innerHTML = "";
+
+  products.forEach(product => {
+
+    productsContainer.innerHTML += `
+
+      <div class="product-card" data-id="${product.id}">
+
+        <img src="${product.image}" alt="${product.name}">
+
+        <div class="product-info">
+
+          <h3>${product.brand}</h3>
+
+          <p>${product.name}</p>
+
+        </div>
+
+      </div>
+
+    `;
+
+  });
+
+}
+
+loadProducts();
