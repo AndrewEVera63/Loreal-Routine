@@ -158,3 +158,31 @@ body {
 }
 
 /* changes */
+.product-card{
+
+    cursor:pointer;
+    transition:.25s;
+}
+
+.product-card:hover{
+
+    transform:translateY(-4px);
+    border-color:#ff003b;
+
+}
+
+.product-card.selected{
+
+    border:3px solid #ff003b;
+    background:#fff5f8;
+
+}
+
+.selected-item{
+
+    padding:10px;
+    margin-bottom:10px;
+    border-left:4px solid #ff003b;
+    background:#fafafa;
+
+}

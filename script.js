@@ -91,7 +91,6 @@ chatForm.addEventListener("submit", async (e) => {
   }
 });
 
-/* Display messages */
 function addMessage(sender, text) {
 
   const message = document.createElement("div");
@@ -113,6 +112,7 @@ function addMessage(sender, text) {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 
   return message;
+
 }
 
 async function loadProducts() {
@@ -123,9 +123,9 @@ async function loadProducts() {
 
   allProducts = data.products;
 
-  displayProducts(allProducts);
+  productsContainer.innerHTML = "";
 
-}   // <-- THIS BRACE WAS MISSING
+}
 
 function displayProducts(products) {
 
@@ -133,9 +133,13 @@ function displayProducts(products) {
 
   products.forEach(product => {
 
+    const isSelected = selectedProducts.some(
+      p => p.id === product.id
+    );
+
     productsContainer.innerHTML += `
 
-      <div class="product-card" data-id="${product.id}">
+      <div class="product-card ${isSelected ? "selected" : ""}" data-id="${product.id}">
 
         <img src="${product.image}" alt="${product.name}">
 
@@ -153,6 +157,122 @@ function displayProducts(products) {
 
   });
 
+  document.querySelectorAll(".product-card").forEach(card => {
+
+    card.addEventListener("click", () => {
+
+      toggleProduct(Number(card.dataset.id));
+
+    });
+
+  });
+
+}
+
+function toggleProduct(id) {
+
+  const product = allProducts.find(p => p.id === id);
+
+  const exists = selectedProducts.some(
+    p => p.id === id
+  );
+
+  if (exists) {
+
+    selectedProducts = selectedProducts.filter(
+      p => p.id !== id
+    );
+
+  } else {
+
+    selectedProducts.push(product);
+
+  }
+
+  displayProducts(allProducts);
+
+  updateSelectedProducts();
+
+}
+
+function updateSelectedProducts() {
+
+  selectedProductsList.innerHTML = "";
+
+  selectedProducts.forEach(product => {
+
+    selectedProductsList.innerHTML += `
+
+      <div class="selected-item">
+
+        <strong>${product.brand}</strong><br>
+        ${product.name}
+
+      </div>
+
+    `;
+
+  });
+
 }
 
 loadProducts();
+
+categoryFilter.addEventListener("change", filterProducts);
+
+searchInput.addEventListener("input", filterProducts);
+
+function filterProducts() {
+
+  const category = categoryFilter.value;
+  const search = searchInput.value.toLowerCase();
+
+  let filtered = allProducts.filter(product => {
+
+    const matchesCategory =
+      category === "" || product.category === category;
+
+    const matchesSearch =
+      product.name.toLowerCase().includes(search) ||
+      product.brand.toLowerCase().includes(search);
+
+    return matchesCategory && matchesSearch;
+
+  });
+
+  displayProducts(filtered);
+
+}
+
+generateRoutineBtn.addEventListener("click", () => {
+
+  if (selectedProducts.length === 0) {
+
+    alert("Please select at least one product.");
+
+    return;
+
+  }
+
+  console.log(selectedProducts);
+
+});
+
+categoryFilter.addEventListener("change", () => {
+
+  const category = categoryFilter.value;
+
+  if (category === "") {
+
+    productsContainer.innerHTML = "";
+    return;
+
+  }
+
+  const filteredProducts = allProducts.filter(product =>
+    product.category === category
+  );
+
+  displayProducts(filteredProducts);
+
+});
