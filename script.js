@@ -4,7 +4,6 @@ const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
 
 const categoryFilter = document.getElementById("categoryFilter");
-const searchInput = document.getElementById("searchInput");
 const productsContainer = document.getElementById("productsContainer");
 const selectedProductsList = document.getElementById("selectedProductsList");
 const generateRoutineBtn = document.getElementById("generateRoutine");
@@ -13,6 +12,8 @@ const workerUrl = "https://loral-chatbot.andrewevera63.workers.dev/";
 
 let allProducts = [];
 let selectedProducts = [];
+let displayedProducts = [];
+let showingAllProducts = false;
 
 
 /* Conversation history */
@@ -20,7 +21,7 @@ const messages = [
   {
     role: "system",
     content:
-      "You are the L'Oréal Beauty Assistant. Only answer questions about L'Oréal makeup, skincare, haircare, fragrances, beauty routines, and beauty recommendations. If asked anything unrelated, politely explain that you only answer beauty-related questions."
+      "You are the L'Oréal Beauty Assistant. When the user provides selected products, create a personalized beauty routine using ONLY those products.Explain the order they should be used and briefly explain why each product is included. If the user asks follow-up questions, continue helping them based on the routine. Only answer questions related to L'Oréal products, beauty, skincare, makeup, haircare, and fragrance. Politely refuse unrelated questions."
   }
 ];
 
@@ -129,6 +130,8 @@ async function loadProducts() {
 
 function displayProducts(products) {
 
+   displayedProducts = products;
+
   productsContainer.innerHTML = "";
 
   products.forEach(product => {
@@ -189,7 +192,7 @@ function toggleProduct(id) {
 
   }
 
-  displayProducts(allProducts);
+  displayProducts(displayedProducts);
 
   updateSelectedProducts();
 
@@ -220,59 +223,122 @@ loadProducts();
 
 categoryFilter.addEventListener("change", filterProducts);
 
-searchInput.addEventListener("input", filterProducts);
 
 function filterProducts() {
 
   const category = categoryFilter.value;
-  const search = searchInput.value.toLowerCase();
 
-  let filtered = allProducts.filter(product => {
+  const filtered = allProducts.filter(product => {
 
-    const matchesCategory =
-      category === "" || product.category === category;
-
-    const matchesSearch =
-      product.name.toLowerCase().includes(search) ||
-      product.brand.toLowerCase().includes(search);
-
-    return matchesCategory && matchesSearch;
+    return category === "" || product.category === category;
 
   });
 
   displayProducts(filtered);
 
-}
+  const viewAll = document.getElementById("viewAllProducts");
 
-generateRoutineBtn.addEventListener("click", () => {
-
-  if (selectedProducts.length === 0) {
-
-    alert("Please select at least one product.");
-
-    return;
-
+  if (category !== "") {
+    viewAll.style.display = "block";
+  } else {
+    viewAll.style.display = "none";
   }
 
-  console.log(selectedProducts);
+  // Hide the message after a category is selected
+  const categoryMessage = document.getElementById("categoryMessage");
+
+  if (category === "") {
+    categoryMessage.style.display = "block";
+  } else {
+    categoryMessage.style.display = "none";
+  }
+
+}
+
+generateRoutineBtn.addEventListener("click", async () => {
+
+  if (selectedProducts.length === 0) {
+    alert("Please select at least one product.");
+    return;
+  }
+
+  // Build a list of selected products
+  const productList = selectedProducts.map(product =>
+    `${product.brand} - ${product.name}
+Category: ${product.category}
+Description: ${product.description}`
+  ).join("\n\n");
+
+  // Display loading message
+  const loadingMessage = addMessage(
+    "assistant",
+    "✨ Creating your personalized beauty routine..."
+  );
+
+  document.querySelector(".chatbox").scrollIntoView({
+
+    behavior:"smooth"
 
 });
 
-categoryFilter.addEventListener("change", () => {
+  // Add prompt to conversation history
+  messages.push({
+    role: "user",
+    content:
+      `Create a personalized L'Oréal beauty routine using ONLY these products:\n\n${productList}`
+  });
 
-  const category = categoryFilter.value;
+  try {
 
-  if (category === "") {
+    const response = await fetch(workerUrl, {
 
-    productsContainer.innerHTML = "";
-    return;
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        messages: messages
+      })
+
+    });
+
+    const data = await response.json();
+
+    const reply = data.choices[0].message.content;
+
+    loadingMessage.innerHTML =
+      `<strong>L'Oréal Assistant:</strong><br>${reply}`;
+
+    messages.push({
+      role: "assistant",
+      content: reply
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    loadingMessage.innerHTML =
+      "<strong>L'Oréal Assistant:</strong><br>Sorry! I couldn't generate your routine.";
 
   }
 
-  const filteredProducts = allProducts.filter(product =>
-    product.category === category
-  );
+});
 
-  displayProducts(filteredProducts);
+document.getElementById("viewAllProducts").addEventListener("click", () => {
+
+  // Reset the category dropdown
+  categoryFilter.value = "";
+
+  // Show every product
+  displayProducts(allProducts);
+
+  // Hide the View All link
+  document.getElementById("viewAllProducts").style.display = "none";
+
+  // Show the category message again
+  document.getElementById("categoryMessage").style.display = "block";
 
 });

@@ -157,16 +157,93 @@ body {
   color: #666666;
 }
 
-/* changes */
-.product-card{
+/* ---------- Search ---------- */
 
-    cursor:pointer;
-    transition:.25s;
+.search-section{
+    display:flex;
+    gap:15px;
+    margin:30px 0;
 }
 
+.search-section input,
+.search-section select{
+
+    flex:1;
+
+    padding:12px;
+
+    font-size:16px;
+
+    border:1px solid #ccc;
+
+    border-radius:6px;
+
+}
+
+
+/* ---------- Product Grid ---------- */
+
+.products-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin:25px 0;
+}
+
+
+/* ---------- Product Cards ---------- */
+
+.product-card{
+
+    background:white;
+
+    border:1px solid #ddd;
+
+    border-radius:8px;
+
+    padding:12px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    text-align:center;
+
+    min-height:190px;
+
+}
+
+.product-card img{
+
+    width:65px;
+
+    height:90px;
+
+    object-fit:contain;
+
+    margin-bottom:8px;
+
+}
+
+.product-card h3{
+
+    font-size:14px;
+
+    margin-bottom:4px;
+
+}
+
+.product-card p{
+
+    font-size:13px;
+
+    color:#555;
+
+}
 .product-card:hover{
 
     transform:translateY(-4px);
+
     border-color:#ff003b;
 
 }
@@ -174,15 +251,109 @@ body {
 .product-card.selected{
 
     border:3px solid #ff003b;
+
     background:#fff5f8;
+
+}
+
+/* ---------- Selected Products ---------- */
+
+.selected-products{
+    margin-top:35px;
+}
+
+#selectedProductsList{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:12px;
 
 }
 
 .selected-item{
 
-    padding:10px;
-    margin-bottom:10px;
-    border-left:4px solid #ff003b;
     background:#fafafa;
+
+    border-left:4px solid #ff003b;
+
+    border-radius:8px;
+
+    padding:12px;
+
+    min-height:90px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+}
+
+/* ---------- View All ---------- */
+
+.view-all{
+
+    text-align:center;
+
+    margin-top:20px;
+
+    color:#666;
+
+    cursor:pointer;
+
+    text-decoration:underline;
+
+}
+
+.view-all:hover{
+
+    color:#ff003b;
+
+}
+
+.category-message{
+
+    text-align:center;
+
+    color:#777;
+
+    font-size:18px;
+
+    margin:25px 0;
+
+}
+
+.generate-btn{
+
+    width:100%;
+
+    padding:18px;
+
+    margin-top:25px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#ff003b;
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.generate-btn:hover{
+
+    background:#d80032;
 
 }
