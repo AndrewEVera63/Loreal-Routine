@@ -20,8 +20,23 @@ let showingAllProducts = false;
 const messages = [
   {
     role: "system",
-    content:
-      "You are the L'Oréal Beauty Assistant. When the user provides selected products, create a personalized beauty routine using ONLY those products.Explain the order they should be used and briefly explain why each product is included. If the user asks follow-up questions, continue helping them based on the routine. Only answer questions related to L'Oréal products, beauty, skincare, makeup, haircare, and fragrance. Politely refuse unrelated questions."
+    content: `
+You are the L'Oréal Beauty Assistant.
+
+Only answer questions about L'Oréal products, beauty, skincare, makeup, haircare, fragrance, and the user's generated routine.
+
+If the user has already generated a routine, continue the conversation using that routine as context.
+
+Always format responses using:
+- Plain text only
+- Short paragraphs
+- Numbered steps when appropriate
+
+Never use Markdown.
+Do not use **bold**, *, bullet syntax, or # headings.
+
+Keep responses under 200 words and easy to read.
+`
   }
 ];
 
@@ -50,9 +65,14 @@ chatForm.addEventListener("submit", async (e) => {
 
   // Save the user's question
   messages.push({
-    role: "user",
-    content: question
-  });
+  role: "user",
+  content:
+    `${question}
+
+Please answer in plain text only.
+Do not use Markdown or **bold**.
+Use short paragraphs.`
+});
 
   // Clear the input
   userInput.value = "";
@@ -96,7 +116,7 @@ function addMessage(sender, text) {
 
   const message = document.createElement("div");
 
-  message.classList.add("msg", sender);
+  message.className = `msg ${sender}`;
 
   if (sender === "user") {
 
