@@ -279,6 +279,7 @@ body {
 }
 
 
+
 /* ---------- Product Cards ---------- */
 
 .product-card{
@@ -455,5 +456,129 @@ body {
 .generate-btn:hover{
 
     background:#d80032;
+
+}
+
+.product-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.product-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:rgba(45,45,45,.92);
+
+    color:white;
+
+    padding:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:left;
+
+    font-size:13px;
+
+    line-height:1.5;
+
+    opacity:0;
+
+    transition:.3s;
+
+}
+
+.product-card:hover .product-overlay{
+
+    opacity:1;
+
+}
+
+.product-card img,
+.product-info{
+
+    transition:.3s;
+
+}
+
+.product-card:hover img,
+.product-card:hover .product-info{
+
+    filter:blur(2px);
+
+    opacity:.25;
+
+}
+
+.product-overlay::after{
+
+    content:"Click to Select";
+
+    position:absolute;
+
+    bottom:12px;
+
+    right:12px;
+
+    font-size:11px;
+
+    opacity:.7;
+
+}
+
+/* ===== RTL Support ===== */
+
+html[dir="rtl"] {
+
+    direction: rtl;
+
+}
+
+html[dir="rtl"] .search-section{
+
+    flex-direction: row-reverse;
+
+}
+
+html[dir="rtl"] .search-section{
+
+    flex-direction: row-reverse;
+
+}
+
+html[dir="rtl"] #selectedProductsList{
+
+    direction: rtl;
+
+}
+
+html[dir="rtl"] .chat-form{
+
+    flex-direction: row-reverse;
+
+}
+
+html[dir="rtl"] .msg.user{
+
+    margin-right:auto;
+
+    margin-left:0;
+
+}
+
+html[dir="rtl"] .msg.assistant{
+
+    margin-left:auto;
+
+    margin-right:0;
 
 }

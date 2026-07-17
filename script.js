@@ -2,7 +2,7 @@
 const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
-
+const searchInput = document.getElementById("searchInput");
 const categoryFilter = document.getElementById("categoryFilter");
 const productsContainer = document.getElementById("productsContainer");
 const selectedProductsList = document.getElementById("selectedProductsList");
@@ -162,21 +162,27 @@ function displayProducts(products) {
 
     productsContainer.innerHTML += `
 
-      <div class="product-card ${isSelected ? "selected" : ""}" data-id="${product.id}">
+<div class="product-card ${isSelected ? "selected" : ""}" data-id="${product.id}">
 
-        <img src="${product.image}" alt="${product.name}">
+    <img src="${product.image}" alt="${product.name}">
 
-        <div class="product-info">
+    <div class="product-info">
 
-          <h3>${product.brand}</h3>
+        <h3>${product.brand}</h3>
 
-          <p>${product.name}</p>
+        <p>${product.name}</p>
 
-        </div>
+    </div>
 
-      </div>
+    <div class="product-overlay">
 
-    `;
+        ${product.description.substring(0, 140)}...
+
+    </div>
+
+</div>
+
+`;
 
   });
 
@@ -242,38 +248,42 @@ function updateSelectedProducts() {
 loadProducts();
 
 categoryFilter.addEventListener("change", filterProducts);
-
+searchInput.addEventListener("input", filterProducts);
 
 function filterProducts() {
 
-  const category = categoryFilter.value;
+    const category = categoryFilter.value;
+    const search = searchInput.value.toLowerCase();
 
-  const filtered = allProducts.filter(product => {
+    const filtered = allProducts.filter(product => {
 
-    return category === "" || product.category === category;
+        const matchesCategory =
+            category === "" ||
+            product.category === category;
 
-  });
+        const matchesSearch =
+            product.name.toLowerCase().includes(search) ||
+            product.brand.toLowerCase().includes(search);
 
-  displayProducts(filtered);
+        return matchesCategory && matchesSearch;
 
-  const viewAll = document.getElementById("viewAllProducts");
+    });
 
-  if (category !== "") {
-    viewAll.style.display = "block";
-  } else {
-    viewAll.style.display = "none";
-  }
+    displayProducts(filtered);
 
-  // Hide the message after a category is selected
-  const categoryMessage = document.getElementById("categoryMessage");
+    const viewAll = document.getElementById("viewAllProducts");
 
-  if (category === "") {
-    categoryMessage.style.display = "block";
-  } else {
-    categoryMessage.style.display = "none";
-  }
+    viewAll.style.display =
+        category !== "" ? "block" : "none";
+
+    const categoryMessage =
+        document.getElementById("categoryMessage");
+
+    categoryMessage.style.display =
+        category === "" ? "block" : "none";
 
 }
+
 
 generateRoutineBtn.addEventListener("click", async () => {
 
@@ -351,6 +361,7 @@ document.getElementById("viewAllProducts").addEventListener("click", () => {
 
   // Reset the category dropdown
   categoryFilter.value = "";
+  searchInput.value = "";
 
   // Show every product
   displayProducts(allProducts);
